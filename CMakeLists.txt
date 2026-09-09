@@ -121,4 +121,14 @@ if(SHAPECOMP_BUILD_TESTS OR SHAPECOMP_BUILD_EXAMPLES)
 endif()
 
 # ----------------- Python binding -----------------
-add_subdirectory(binding)
+# scikit-build-core provides pybind11 for the Python package build. Pure C++
+# configures (tests/examples) can skip the binding when pybind11 is absent.
+option(SHAPECOMP_BUILD_PYTHON "Build the pybind11 Python extension" ON)
+if(SHAPECOMP_BUILD_PYTHON)
+    find_package(pybind11 CONFIG QUIET)
+    if(pybind11_FOUND)
+        add_subdirectory(binding)
+    else()
+        message(STATUS "pybind11 not found; skipping Python binding (set SHAPECOMP_BUILD_PYTHON=OFF to silence)")
+    endif()
+endif()
