@@ -1,0 +1,9 @@
+[submodule "deps/eigen"]
+	path = deps/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+[submodule "deps/geometry-central"]
+	path = deps/geometry-central
+	url = https://github.com/YuanL12/geometry-central.git
+[submodule "deps/taskflow"]
+	path = deps/taskflow
+	url = https://github.com/taskflow/taskflow.git

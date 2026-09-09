@@ -1,0 +1,81 @@
+.DS_Store
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+build
+build_debug
+.vscode
+*.off
+
+/data
+*.npy
+*.ipynb
+
+# Ignore meshes by default; keep tracked test fixtures.
+*.obj
+!test/input/**/*.obj
+*.png
+*.svg
+
+test/*.txt
+
+__pycache__
+*.mp4
+*.csv
+
+test/torus_output
+
+wandb/
+
+logs/
+
+*.pdf
+.clang-format
+
+*.yaml
+
+geo_python
+
+deps/ann
+deps/annlib
+deps/SuiteSparse
+
+*.mtl
+
+docs/
+
+data
+
+*.pt
+
+archive/
+plot_data
