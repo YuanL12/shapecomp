@@ -62,17 +62,47 @@ import shapecomp as sc
 mesh = sc.load_mesh("test/input/torus/torus.obj", False)
 V, F = mesh.get_vertices(), mesh.get_faces()
 assert V.shape[1] == F.shape[1] == 3
-
-geodesic_mana = sc.GeodesicsManager(V, F)
-source_surface_pt = [0, [0.2, 0.4, 0.4]]
-target_surface_pt = [40, [0.2, 0.4, 0.4]]
-pts_on_path = geodesic_mana.find_geodesic_path(
-    target_surface_pt[0],
-    source_surface_pt[0],
-    target_surface_pt[1],
-    source_surface_pt[1],
-)
 ```
+
+### Geodesics
+
+Compute an exact geodesic path between two surface points (face index +
+barycentric coordinates):
+
+```python
+geodesic_mana = sc.GeodesicsManager(V, F)
+source_surface_pt = [10, [0.5, 0.3, 0.2]]
+target_surface_pt = [1800, [0.4, 0.4, 0.2]]
+pts_on_path = geodesic_mana.find_exact_geodesic_path(
+    source_surface_pt[0],
+    target_surface_pt[0],
+    source_surface_pt[1],
+    target_surface_pt[1],
+)
+# pts_on_path is an (n, 3) array of points along the geodesic
+```
+
+![Geodesic path between two surface points on a torus](docs/images/geodesic_path.png)
+
+### Torus fundamental domain (parameterization)
+
+`PlanarLocator` cuts a torus along a pair of generators and builds a planar
+Tutte parameterization of the fundamental domain:
+
+```python
+planar = sc.PlanarLocator(mesh)
+gen1_3d, gen2_3d = planar.get_generator_paths_3d()
+uv = planar.get_uv_positions()
+faces_cut = planar.get_cutted_mesh_faces()
+```
+
+Generators drawn on the surface:
+
+![Two homotopy generators on a torus](docs/images/torus_generators.png)
+
+Corresponding fundamental domain in the UV plane:
+
+![Tutte UV fundamental domain of a torus](docs/images/fundamental_domain.png)
 
 ## License
 
