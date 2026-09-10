@@ -86,23 +86,19 @@ pts_on_path = geodesic_mana.find_exact_geodesic_path(
 
 ### Torus fundamental domain (parameterization)
 
-`PlanarLocator` cuts a torus along a pair of generators and builds a planar
-Tutte parameterization of the fundamental domain:
+`PlanarLocator` uses ReebHanTun to find a pair of generators, cuts the torus
+along them, and builds a planar Tutte parameterization of the fundamental
+domain:
 
 ```python
-planar = sc.PlanarLocator(mesh)
+planar = sc.PlanarLocator()
+planar.constructPlanarLocatorReebGraph(mesh)
 gen1_3d, gen2_3d = planar.get_generator_paths_3d()
 uv = planar.get_uv_positions()
 faces_cut = planar.get_cutted_mesh_faces()
 ```
 
-Generators drawn on the surface:
-
-![Two homotopy generators on a torus](docs/images/torus_generators.png)
-
-Corresponding fundamental domain in the UV plane:
-
-![Tutte UV fundamental domain of a torus](docs/images/fundamental_domain.png)
+![ReebHanTun generators (left) and Tutte UV fundamental domain (right)](docs/images/generators_and_fundamental_domain.png)
 
 ## License
 
