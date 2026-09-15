@@ -72,10 +72,14 @@ set(GP_SOURCES
     src/matrix/Laplacian.cpp
     # embedding sources
     src/embedding/torus/Tutte.cpp
+    src/embedding/sphere/SphereTutte.cpp
+    src/embedding/sphere/Normalize.cpp
     # torus_comparison sources
     src/torus_comparison/GeodesicPath.cpp
     src/torus_comparison/MeshSurgery.cpp
     src/torus_comparison/Planar.cpp
+    # sphere_comparison sources
+    src/sphere_comparison/SphereLocator.cpp
     # extern/geometry_central sources
     src/extern/geometry_central/geodesic.cpp
 )
@@ -105,6 +109,10 @@ if(SHAPECOMP_BUILD_TESTS OR SHAPECOMP_BUILD_EXAMPLES)
     set_target_properties(test_planar_locator PROPERTIES OUTPUT_NAME test_planar_locator.out)
     target_link_libraries(test_planar_locator PRIVATE Eigen3::Eigen gp)
 
+    add_executable(test_sphere_locator src/test/test_sphere_locator.cpp)
+    set_target_properties(test_sphere_locator PROPERTIES OUTPUT_NAME test_sphere_locator.out)
+    target_link_libraries(test_sphere_locator PRIVATE Eigen3::Eigen gp)
+
     add_executable(test_CircularLinkedList src/test/test_CircularLinkedList.cpp)
     set_target_properties(test_CircularLinkedList PROPERTIES OUTPUT_NAME test_CircularLinkedList.out)
     target_link_libraries(test_CircularLinkedList PRIVATE Eigen3::Eigen gp)
@@ -117,6 +125,14 @@ if(SHAPECOMP_BUILD_TESTS OR SHAPECOMP_BUILD_EXAMPLES)
     add_test(
         NAME load_mesh_torus_smoke
         COMMAND load_mesh "${CMAKE_SOURCE_DIR}/test/input/torus/torus.obj"
+    )
+    add_test(
+        NAME sphere_locator_icosahedron_smoke
+        COMMAND test_sphere_locator "${CMAKE_SOURCE_DIR}/test/input/sphere/icosahedron.obj"
+    )
+    add_test(
+        NAME sphere_locator_tetrahedron_smoke
+        COMMAND test_sphere_locator "${CMAKE_SOURCE_DIR}/test/input/sphere/tetrahedron.obj"
     )
 endif()
 

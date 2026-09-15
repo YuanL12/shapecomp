@@ -11,6 +11,9 @@ PYBIND11_MODULE(_shapecomp, m) {
 
     // PlanarLocator
     init_planar_locator(m);
+
+    // SphereLocator
+    init_sphere_locator(m);
     
     // Compute geodesic by Geometry-Central
     init_geodesic(m);

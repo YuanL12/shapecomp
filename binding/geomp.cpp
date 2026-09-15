@@ -9,6 +9,7 @@
 #include <pybind11/stl.h>
 #include "geomp/torus_comparison/Planar.h"
 #include "geomp/torus_comparison/GeodesicPath.h"
+#include "geomp/sphere_comparison/SphereLocator.h"
 #include "geomp/mesh/Mesh.h"
 namespace py = pybind11;
 
@@ -241,6 +242,39 @@ void init_planar_locator(py::module& m){
             "Get the 3D points along the two generator paths. "
             "Returns a tuple of two numpy arrays, each Nx3 representing the 3D points along a generator path.")
 
+    ;
+}
+
+void init_sphere_locator(py::module& m){
+    py::class_<SphereLocator>(m, "SphereLocator")
+        .def(py::init<>(), "Construct a default empty SphereLocator")
+        .def(py::init<Mesh&, std::optional<std::string>>(),
+            "Construct a SphereLocator from a closed genus-zero mesh. "
+            "Supported Tutte types: Uniform, coTan, MeanValue, Authalic. Default is coTan.",
+            py::arg("mesh"),
+            py::arg("Tutte_embedding_type") = std::string("coTan"),
+            py::keep_alive<1, 2>())
+        .def("construct", &SphereLocator::construct,
+            "Parameterize a closed genus-zero mesh onto the unit sphere",
+            py::arg("mesh"),
+            py::arg("Tutte_embedding_type") = std::nullopt,
+            py::arg("pole_type") = 0,
+            py::keep_alive<1, 2>())
+        .def("get_mesh", &SphereLocator::get_mesh_ptr, "Get the pointer to the original mesh")
+        .def("get_pole_index", &SphereLocator::get_pole_index, "Get the punctured pole vertex index")
+        .def("get_sphere_vertices", [](const SphereLocator& locator) {
+            return eigen_to_row_major_numpy(locator.get_sphere_vertices());
+        }, "Get unit-sphere vertex coordinates as a row-major (V, 3) array")
+        .def("find_bary_coords",
+            py::overload_cast<const Eigen::Vector3d&>(&SphereLocator::findBaryCoords, py::const_),
+            "Find the spherical triangle containing a query point (ray from the origin)",
+            py::arg("point"))
+        .def("find_bary_coords_parallel",
+            [](const SphereLocator& locator, const Eigen::MatrixXd& points) {
+                return locator.findBaryCoordsParallel(points);
+            },
+            "Find spherical barycentric coordinates of multiple points in parallel",
+            py::arg("points"))
     ;
 }
 

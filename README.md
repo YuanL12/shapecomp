@@ -3,7 +3,8 @@
 C++ and Python tools for comparing shapes and surfaces.
 
 Supports mesh I/O, surface representations, geodesics, topology/homotopy helpers,
-planar location, and reusable comparison primitives, with Python bindings.
+planar location, spherical parameterization of genus-zero meshes, and reusable
+comparison primitives, with Python bindings.
 
 ## Prerequisites
 
@@ -99,6 +100,23 @@ faces_cut = planar.get_cutted_mesh_faces()
 ```
 
 ![ReebHanTun generators (left) and Tutte UV fundamental domain (right)](docs/images/generators_and_fundamental_domain.png)
+
+### Genus-zero spherical parameterization
+
+`SphereLocator` maps a closed genus-zero mesh to the unit sphere (puncture a pole,
+planar Tutte, inverse stereographic projection, then Crane Möbius centering) and
+locates spherical triangles by shooting a ray from the origin:
+
+```python
+mesh = sc.load_mesh("test/input/sphere/icosahedron.obj", False)
+assert mesh.eulerCharacteristic == 2
+sphere = sc.SphereLocator(mesh, Tutte_embedding_type="coTan")
+S = sphere.get_sphere_vertices()          # (V, 3) on the unit sphere
+face, bary = sphere.find_bary_coords(S[0])
+```
+
+Supported Tutte weights: `Uniform`, `coTan` (default), `MeanValue`, `Authalic`.
+Original 3D vertex positions are left unchanged.
 
 ## License
 

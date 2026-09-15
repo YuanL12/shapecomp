@@ -8,6 +8,7 @@ namespace py = pybind11;
 
 // Forward declare module builders in various source files
 void init_planar_locator(py::module& m);
+void init_sphere_locator(py::module& m);
 void init_mesh(py::module& m);
 void init_geodesic(py::module& m);
 void init_parallel_taskflow(py::module& m);
