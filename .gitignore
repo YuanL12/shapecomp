@@ -42,7 +42,6 @@ build_debug
 
 # Ignore meshes by default; keep tracked test fixtures.
 *.obj
-!test/input/**/*.obj
 *.png
 !docs/images/**/*.png
 *.svg
