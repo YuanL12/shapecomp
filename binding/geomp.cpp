@@ -10,6 +10,7 @@
 #include "geomp/torus_comparison/Planar.h"
 #include "geomp/torus_comparison/GeodesicPath.h"
 #include "geomp/sphere_comparison/SphereLocator.h"
+#include "geomp/generators/ReebLoop.h"
 #include "geomp/mesh/Mesh.h"
 namespace py = pybind11;
 
@@ -282,6 +283,25 @@ void init_sphere_locator(py::module& m){
 void init_meshio(py::module& m){
     m.def("write_mesh_into_obj", &MeshIO::writeMeshOBJ, "Write mesh to obj file", py::arg("fileName"), py::arg("mesh"));
     m.def("subdivide_mesh",  py::overload_cast<const Mesh&>(&MeshIO::BarycenterDivideMesh), "Subdivide mesh", py::arg("mesh"));
+}
+
+void init_generators(py::module& m){
+    m.def(
+        "find_reeb_basis_loops",
+        [](Mesh& mesh, const std::vector<double>& direction) {
+            if (direction.size() != 3) {
+                throw std::invalid_argument("direction must be a length-3 vector");
+            }
+            Vector3 distinctDirection(direction[0], direction[1], direction[2]);
+            ReebHanTunLoops loops(mesh, distinctDirection);
+            return loops.findIndependentBasisLoops();
+        },
+        "Compute independent ReebHanTun handle/tunnel basis loops for a closed surface of genus g>=1.\n"
+        "Returns (handle_loops, tunnel_loops): each is a list of g loops, and each loop is a list of "
+        "vertex indices. PlanarLocator remains torus-specific; use this for genus g>1.\n"
+        "The direction vector is validated (must induce a Morse height function).",
+        py::arg("mesh"),
+        py::arg("direction"));
 }
 
 // void init_normalize(py::module& m){

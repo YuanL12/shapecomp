@@ -23,6 +23,9 @@ PYBIND11_MODULE(_shapecomp, m) {
 
     // MeshIO
     init_meshio(m);
+
+    // Homology generators (high-genus Reeb basis loops)
+    init_generators(m);
     
     // // Mapping
     // m.def("tutte_embedding", &find_tutte_embedding);

@@ -80,8 +80,19 @@ class ReebHanTunLoops {
      * Uses ReebHanTun to compute handle and tunnel loops, then returns the vertices on the generators
      *
      * @return Pair of vectors containing the vertices on the handle and tunnel generators
+     * @note For genus g>1 this unions all handle (resp. tunnel) loops; prefer
+     *       findIndependentBasisLoops() when distinct basis cycles are required.
      */
     std::pair<std::vector<int>, std::vector<int>> findReebGraphGenerators();
+
+    /**
+     * Return each handle and tunnel basis loop independently (2g loops for genus g).
+     * Each loop is the set of mesh vertex indices incident to that cycle's edges.
+     *
+     * @return Pair of (handle_loops, tunnel_loops), each a vector of vertex-index vectors
+     */
+    std::pair<std::vector<std::vector<int>>, std::vector<std::vector<int>>>
+    findIndependentBasisLoops() const;
 };
 
 }  // namespace geomp

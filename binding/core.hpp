@@ -13,3 +13,4 @@ void init_mesh(py::module& m);
 void init_geodesic(py::module& m);
 void init_parallel_taskflow(py::module& m);
 void init_meshio(py::module& m);
+void init_generators(py::module& m);

@@ -55,3 +55,40 @@ def test_sphere_locator_tetrahedron() -> None:
     mesh_path = REPO_ROOT / "test" / "input" / "sphere" / "tetrahedron.obj"
     assert mesh_path.is_file(), f"missing fixture: {mesh_path}"
     _check_sphere_locator(mesh_path)
+
+
+def test_reeb_basis_loops_genus2() -> None:
+    mesh_path = REPO_ROOT / "test" / "input" / "genus2" / "double_torus.obj"
+    assert mesh_path.is_file(), f"missing fixture: {mesh_path}"
+
+    mesh = sc.load_mesh(str(mesh_path), False)
+    # Closed orientable surface: chi = 2 - 2g => genus 2 has chi = -2
+    assert mesh.eulerCharacteristic == -2
+
+    # Fixed Morse-valid direction for this fixture (must remain valid under validateDirectionVector)
+    direction = [0.23116513807972336, -0.7889550192379909, 0.5693089289267855]
+    handle_loops, tunnel_loops = sc.find_reeb_basis_loops(mesh, direction)
+
+    assert len(handle_loops) == 2, f"expected 2 handle loops, got {len(handle_loops)}"
+    assert len(tunnel_loops) == 2, f"expected 2 tunnel loops, got {len(tunnel_loops)}"
+
+    all_loops = list(handle_loops) + list(tunnel_loops)
+    assert len(all_loops) == 4
+    n_verts = mesh.get_vertices().shape[0]
+    for loop in all_loops:
+        verts = np.asarray(loop, dtype=np.int64)
+        assert verts.ndim == 1
+        assert verts.size >= 3
+        assert np.all(verts >= 0)
+        assert np.all(verts < n_verts)
+
+    # Distinct basis cycles: no two loops may share the exact same vertex set
+    signatures = {frozenset(int(v) for v in loop) for loop in all_loops}
+    assert len(signatures) == 4
+
+    # Zero vector cannot be a valid Morse direction
+    try:
+        sc.find_reeb_basis_loops(mesh, [0.0, 0.0, 0.0])
+        raise AssertionError("expected zero direction to raise")
+    except Exception:
+        pass

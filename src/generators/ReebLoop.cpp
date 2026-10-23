@@ -306,6 +306,22 @@ void ReebHanTunLoops::labelReebGraphGeneratorsOnMesh(Mesh& mesh) {
     }
 }
 
+namespace {
+
+std::vector<int> verticesFromEdgeLoop(const _SimpleMesh& simpleMesh, const std::set<int>& edgeLoop) {
+    std::set<int> vertices;
+    for (int edgeIdx : edgeLoop) {
+        if (edgeIdx < 0 || edgeIdx >= static_cast<int>(simpleMesh.vecEdge.size())) {
+            continue;
+        }
+        vertices.insert(simpleMesh.vecEdge[edgeIdx].v0);
+        vertices.insert(simpleMesh.vecEdge[edgeIdx].v1);
+    }
+    return std::vector<int>(vertices.begin(), vertices.end());
+}
+
+}  // namespace
+
 std::pair<std::vector<int>, std::vector<int>> ReebHanTunLoops::findReebGraphGenerators() {
     // find the vertices on the handle generator
     std::set<int> handleVertices;
@@ -338,5 +354,22 @@ std::pair<std::vector<int>, std::vector<int>> ReebHanTunLoops::findReebGraphGene
         }
     }
     return std::make_pair(std::vector<int>(handleVertices.begin(), handleVertices.end()), std::vector<int>(tunnelVertices.begin(), tunnelVertices.end()));
+}
+
+std::pair<std::vector<std::vector<int>>, std::vector<std::vector<int>>>
+ReebHanTunLoops::findIndependentBasisLoops() const {
+    std::vector<std::vector<int>> handleLoops;
+    handleLoops.reserve(h_basis_loops.size());
+    for (const auto& edgeLoop : h_basis_loops) {
+        handleLoops.push_back(verticesFromEdgeLoop(simpleMesh, edgeLoop));
+    }
+
+    std::vector<std::vector<int>> tunnelLoops;
+    tunnelLoops.reserve(v_basis_loops.size());
+    for (const auto& edgeLoop : v_basis_loops) {
+        tunnelLoops.push_back(verticesFromEdgeLoop(simpleMesh, edgeLoop));
+    }
+
+    return {std::move(handleLoops), std::move(tunnelLoops)};
 }
 }  // namespace geomp

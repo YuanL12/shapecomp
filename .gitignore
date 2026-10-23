@@ -83,4 +83,5 @@ build-test/
 .venv/
 
 *obj
+!test/input/**/*.obj
 uv.lock

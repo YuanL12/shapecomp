@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "shapecomp"
-version = "0.1.0"
+version = "0.2.0"
 description = "C++ and Python tools for comparing shapes and surfaces"
 authors = [{name = "Yuan Luo", email = "luoyuan9809@gmail.com"}]
 requires-python = ">=3.10"
